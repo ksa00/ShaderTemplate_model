@@ -27,12 +27,14 @@ class Fbx
 	{
 		Texture* pTexture;
 		XMFLOAT4	diffuse;
+		XMFLOAT2 factor;
 	};
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;
+		XMFLOAT2 diffuseFactor;
 		int			isTextured;
 	};
 

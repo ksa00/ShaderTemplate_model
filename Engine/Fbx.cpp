@@ -211,6 +211,9 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].pTexture = new Texture;
 			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
 			assert(hr == S_OK);
+			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+			FbxDouble diffuse = pMaterial->DiffuseFactor;
+			pMaterialList_[i].factor = XMFLOAT2((float)diffuse, (float)diffuse);
 		}
 
 		//テクスチャ無し
@@ -222,6 +225,8 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
 			FbxDouble3  diffuse = pMaterial->Diffuse;
 			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+			FbxDouble factor = pMaterial->DiffuseFactor;
+			pMaterialList_[i].factor = XMFLOAT2((float)factor, (float)factor);
 		}
 	}
 }
@@ -238,6 +243,7 @@ void Fbx::Draw(Transform& transform)
 	{
 	
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.diffuseFactor = pMaterialList_[i].factor;
 		if (pMaterialList_[i].pTexture == nullptr)
 			cb.isTextured = false;
 		else

@@ -3,7 +3,7 @@
 
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage"),hmodel_(-1), q(nullptr)
+	:GameObject(parent,"Stage"),hmodel_(-1)
 {
 	
 

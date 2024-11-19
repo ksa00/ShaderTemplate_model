@@ -17,6 +17,7 @@ cbuffer global
   
     float4x4 matW; //ワールド行列
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）
+    float2 factor;
     bool isTextured; // テクスチャ貼ってあるかどうか 
 };
 
@@ -65,13 +66,13 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 ambient;
     if (isTextured == false)
     {
-        diffuse = lightSource * diffuseColor * inData.color;
-        ambient = lightSource * diffuseColor * ambentSource;
+        diffuse =   diffuseColor * inData.color*factor.x;
+        ambient = diffuseColor * ambentSource * factor.x;
     }
     else
     {
-        diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-        ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
+        diffuse = g_texture.Sample(g_sampler, inData.uv) * inData.color * factor.x;
+        ambient = g_texture.Sample(g_sampler, inData.uv) * ambentSource * factor.x;
     }
     return diffuse + ambient;
 
