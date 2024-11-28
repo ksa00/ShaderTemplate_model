@@ -20,7 +20,7 @@ namespace Direct3D
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
-	XMFLOAT4 G_LightVec = {0,1,-1,0};
+	XMFLOAT4 G_LightVec = {0,3,-1,0};
 }
 
 //初期化

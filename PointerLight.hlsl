@@ -48,6 +48,8 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.uv = uv;
     //ñ@ê¸ÇâÒì]
     normal = mul(normal, matW);
+    normal.w = 0;
+    normal = normalize(normal);
     float4 light = lightVec;
 
     light = normalize(light);
