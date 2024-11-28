@@ -88,6 +88,7 @@
     <FxCompile Include="Simple3D.hlsl" />
     <FxCompile Include="Simple2D.hlsl" />
     <FxCompile Include="crtRender.hlsl" />
+    <FxCompile Include="PointerLight.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

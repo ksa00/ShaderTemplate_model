@@ -75,7 +75,7 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
-			pVertices_[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+			pVertices_[index].position = XMVectorSet((float)pos[0], (float)pos[1], -(float)pos[2], 0.0f);
 
 			//頂点のUV
 			FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
@@ -86,7 +86,7 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 			//頂点の法線
 			FbxVector4 Normal;
 			mesh->GetPolygonVertexNormal(poly, vertex, Normal);	//ｉ番目のポリゴンの、ｊ番目の頂点の法線をゲット
-			pVertices_[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
+			pVertices_[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], -(float)Normal[2], 0.0f);
 		}
 	}
 	// 頂点バッファ作成
@@ -132,7 +132,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 				//3頂点分
 				for (DWORD vertex = 0; vertex < 3; vertex++)
 				{
-					ppIndex_[i][count] = mesh->GetPolygonVertex(poly, vertex);
+					ppIndex_[i][count] = mesh->GetPolygonVertex(poly, 2-vertex);
 					count++;
 				}
 			}
@@ -232,18 +232,20 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 }
 void Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_3D);
+	Direct3D::SetShader(SHADER_POINT);
 	transform.Calculation();//トランスフォームを計算
 
 	//コンスタントバッファに情報を渡す
 		CONSTANT_BUFFER cb;
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
+		cb.GlobalLightVec = Direct3D::GetGlobalLightVec();
 	for (int i = 0; i < materialCount_; i++)
 	{
 	
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		cb.diffuseFactor = pMaterialList_[i].factor;
+		
 		if (pMaterialList_[i].pTexture == nullptr)
 			cb.isTextured = false;
 		else

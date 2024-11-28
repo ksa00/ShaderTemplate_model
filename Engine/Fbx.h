@@ -33,6 +33,7 @@ class Fbx
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
+		XMFLOAT4 GlobalLightVec;
 		XMFLOAT4	diffuseColor;
 		XMFLOAT2 diffuseFactor;
 		int			isTextured;

@@ -1,6 +1,8 @@
 #pragma once
 //インクルード
 #include <d3d11.h>
+#include <DirectXMath.h>
+
 #include <assert.h>
 //リンカ
 #pragma comment(lib, "d3d11.lib")
@@ -8,12 +10,13 @@
 
 #define SAFE_DELETE(p) if(p != nullptr){ delete p; p = nullptr;}
 #define SAFE_RELEASE(p) if(p != nullptr){ p->Release(); p = nullptr;}
-
+using namespace DirectX;
 enum SHADER_TYPE
 {
 	SHADER_2D,
 	SHADER_3D,
 	SHADER_CRT,
+	SHADER_POINT,
 	SHADER_MAX,
 };
 
@@ -28,6 +31,7 @@ namespace Direct3D
 
 	//シェーダー準備
 	HRESULT InitShader();
+	HRESULT InitShaderPoint();
 	HRESULT InitShaderCRT();
 	HRESULT InitShader3D();
 	HRESULT InitShader2D();
@@ -44,5 +48,7 @@ namespace Direct3D
 
 	//解放
 	void Release();
+	void SetGlobalLightVec(XMFLOAT4 lv);
+	XMFLOAT4 GetGlobalLightVec();
 };
 

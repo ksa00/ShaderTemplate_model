@@ -4,10 +4,8 @@
 
 class Stage:public GameObject
 {
-	int hmodel_;
-	int tama_;
-	int tama_tama;
-	int tama_tama_tama;
+	int hmodel_[3];
+	
 public:
 	Stage(GameObject* parent);
 	~Stage();
