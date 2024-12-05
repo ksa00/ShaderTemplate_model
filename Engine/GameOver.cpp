@@ -9,7 +9,7 @@ GameOver::GameOver(GameObject* parent)
 
 void GameOver::Initialize()
 {
-	over.Load("Asset/GameOver.png");
+	//over.Load("Asset/GameOver.png");
 
 }
 
@@ -27,7 +27,7 @@ void GameOver::Update()
 void GameOver::Draw()
 {
 	
-	over.Draw(transform_);
+//	over.Draw(transform_);
 }
 
 void GameOver::Release()

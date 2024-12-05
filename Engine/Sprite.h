@@ -1,72 +1,76 @@
 ﻿#pragma once
 #include "Direct3D.h"
 #include "Texture.h"
+#include <vector>
 #include "Transform.h"
-#include<vector>
-
-using std::vector;
-
-//#define SAFE_DELETE_ARRAY(p) if(p != nullptr){ delete[] p; p = nullptr;}
 
 
 
-//ŽlŠpŒ`ƒ|ƒŠƒSƒ“iŽOŠpŒ`‚ð‚Q–‡j‚ð•`‰æ‚·‚éƒNƒ‰ƒX
+#define SAFE_DELETE_ARRAY(p) if(p != nullptr){ delete[] p; p = nullptr;}
+
+
+
+//四角形ポリゴン（三角形を２枚）を描画するクラス
 class Sprite
 {
-	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@[
+	//コンスタントバッファー
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matW;		//ƒ[ƒ‹ƒhs—ñ
+		XMMATRIX	matW;		//ワールド行列
 	};
 
-	//’¸“_î•ñ
+	//頂点情報
 	struct VERTEX
 	{
-		XMVECTOR position;	//ˆÊ’u
+		XMVECTOR position;	//位置
 		XMVECTOR uv;		//UV
 	};
-protected:
-	uint64_t vertexNum_;
-	vector<VERTEX>vertices_;
-	uint64_t indexNum_;
-	vector<int>indices_;
-	ID3D11Buffer* pIndexBuffer_;		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
-	ID3D11Buffer* pVertexBuffer_;
-	ID3D11Buffer* pConstantBuffer_;	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@
 
-	Texture* pTexture_;		//ƒeƒNƒXƒ`ƒƒ
+protected:
+	uint64_t vertexNum_;		//頂点数
+	std::vector<VERTEX> vertices_;		//頂点情報
+	ID3D11Buffer* pVertexBuffer_;		//頂点バッファ
+
+	uint64_t indexNum;			//インデックス数
+	std::vector<int> index_;			//インデックス情報
+	ID3D11Buffer* pIndexBuffer_;		//インデックスバッファ
+
+	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
+
+	Texture* pTexture_;		//テクスチャ
 
 
 public:
 	Sprite();
 	~Sprite();
 
-	//‰Šú‰»iƒ|ƒŠƒSƒ“‚ð•\Ž¦‚·‚é‚½‚ß‚ÌŠeŽíî•ñ‚ð€”õj
-	//–ß’lF¬Œ÷^Ž¸”s
+	//初期化（ポリゴンを表示するための各種情報を準備）
+	//戻値：成功／失敗
+	HRESULT Initialize();
 
-	HRESULT Load(std::string fileName);//初期化用（コンストラクタでできない奴はこっちで初期化）
-	//•`‰æ
-	//ˆø”Ftransform	ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€ƒIƒuƒWƒFƒNƒg
+	//描画
+	//引数：transform	トランスフォームクラスオブジェクト
 	void Draw(Transform& transform);
 
-	//‰ð•ú
+	//解放
 	void Release();
 
+
+
 private:
-	//---------Initialize‚©‚çŒÄ‚Î‚ê‚éŠÖ”---------
-	virtual void InitVertexData();		//’¸“_î•ñ‚Ì€”õ
-	HRESULT CreateVertexBuffer();		//’¸“_ƒoƒbƒtƒ@‚ðì¬
+	//---------Initializeから呼ばれる関数---------
+	virtual void InitVertexData();		//頂点情報の準備
+	HRESULT CreateVertexBuffer();		//頂点バッファを作成
 
-	virtual void InitIndexData();		//ƒCƒ“ƒfƒbƒNƒXî•ñ‚ð€”õ
-	HRESULT CreateIndexBuffer();		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ðì¬
+	virtual void InitIndexData();		//インデックス情報を準備
+	HRESULT CreateIndexBuffer();		//インデックスバッファを作成
 
-	HRESULT CreateConstantBuffer();		//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@ì¬
+	HRESULT CreateConstantBuffer();		//コンスタントバッファ作成
 
-	HRESULT LoadTexture(std::string fileName);			//テクスチャをロード
+	HRESULT LoadTexture();				//テクスチャをロード
 
 
-	//---------DrawŠÖ”‚©‚çŒÄ‚Î‚ê‚éŠÖ”---------
-	void PassDataToCB(Transform& transform);	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚ÉŠeŽíî•ñ‚ð“n‚·
-	void SetBufferToPipeline();
-
+	//---------Draw関数から呼ばれる関数---------
+	void PassDataToCB(XMMATRIX worldMatrix);	//コンスタントバッファに各種情報を渡す
+	void SetBufferToPipeline();							//各バッファをパイプラインにセット
 };

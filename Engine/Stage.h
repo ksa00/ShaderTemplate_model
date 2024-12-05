@@ -1,17 +1,28 @@
 #pragma once
-#include"Quad.h"
-#include"GameObject.h"
+#include "GameObject.h"
 
-class Stage:public GameObject
+
+//◆◆◆を管理するクラス
+class Stage : public GameObject
 {
-	int hmodel_[3];
-	
+    int hModel_[3];    //モデル番号
+    int hGround;
 public:
-	Stage(GameObject* parent);
-	~Stage();
-	void Initialize()override;
-	void Update()override;
-	void Draw()override;
-	void Release()override;
+    //コンストラクタ
+    Stage(GameObject* parent);
 
+    //デストラクタ
+    ~Stage();
+
+    //初期化
+    void Initialize() override;
+
+    //更新
+    void Update() override;
+
+    //描画
+    void Draw() override;
+
+    //開放
+    void Release() override;
 };

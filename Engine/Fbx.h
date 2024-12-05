@@ -1,41 +1,38 @@
 #pragma once
-#include "Direct3D.h"
+
 #include <d3d11.h>
 #include <fbxsdk.h>
 #include <string>
-#include "Camera.h"
-#include "Texture.h"
-#include <DirectXCollision.h>
 #include "Transform.h"
+#include <vector>
+
 
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
 
 using std::vector;
-struct RayCastData
-{
-	XMFLOAT3 start;
-	XMFLOAT3 dir;
-	bool hit;
-	float dist;
-};
+
+class Texture;
+
 class Fbx
 {
 	//マテリアル
 	struct MATERIAL
 	{
 		Texture* pTexture;
-		XMFLOAT4	diffuse;
-		XMFLOAT2 factor;
+		XMFLOAT4 diffuse;
+		XMFLOAT4 factor;
 	};
+
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matWVP;
-		XMMATRIX	matNormal;
-		XMFLOAT4 GlobalLightVec;
-		XMFLOAT4	diffuseColor;
-		XMFLOAT2 diffuseFactor;
+		XMMATRIX	matWVP;//スクリーン変換マトリクス
+		XMMATRIX	matW; //ワールド変換マトリクス
+		XMMATRIX	matNormal;//法線ワールド変換用マトリクス
+		XMFLOAT4	diffuseColor;//RGBの拡散反射係数（色）
+		XMFLOAT4    lightPosition;//光源位置
+		XMFLOAT4	diffuseFactor;//拡散光の反射係数
 		int			isTextured;
 	};
 
@@ -45,7 +42,7 @@ class Fbx
 		XMVECTOR uv; //テクスチャ座標
 		XMVECTOR normal; //法線ベクトル
 	};
-	
+
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
 	int materialCount_;	//マテリアルの個数
@@ -53,20 +50,17 @@ class Fbx
 	ID3D11Buffer* pVertexBuffer_;
 	ID3D11Buffer** pIndexBuffer_;
 	ID3D11Buffer* pConstantBuffer_;
-	MATERIAL* pMaterialList_;
-	VERTEX* pVertices_;
-	int** ppIndex_;
+	std::vector<MATERIAL> pMaterialList_;
 	vector <int> indexCount_;
-	
-public:
 
-	Fbx();
-	HRESULT Load(std::string fileName);
 	void InitVertex(fbxsdk::FbxMesh* mesh);
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
-    void    Draw(Transform& transform);
+public:
+
+	Fbx();
+	HRESULT Load(std::string fileName);
+	void    Draw(Transform& transform);
 	void    Release();
-	void RayCast(RayCastData& rayData);
 };
