@@ -36,43 +36,39 @@ void Stage::Initialize()
 void Stage::Update()
 {
     transform_.rotate_.y += 0.5f;
-    if (Input::IsKey(DIK_A))
+
+    // Handle light position updates based on key inputs
+    XMFLOAT4 lightPos = Direct3D::GetLightPos();  // Get current light position
+
+    if (Input::IsKey(DIK_A))  // Move light left
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x - 0.01f,p.y, p.z,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.x -= 0.01f;
     }
-    if (Input::IsKey(DIK_D))
+    if (Input::IsKey(DIK_D))  // Move light right
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x + 0.01f,p.y, p.z,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.x += 0.01f;
     }
-    if (Input::IsKey(DIK_W))
+    if (Input::IsKey(DIK_W))  // Move light forward (in Z)
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x,p.y, p.z + 0.01f,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.z += 0.01f;
     }
-    if (Input::IsKey(DIK_S))
+    if (Input::IsKey(DIK_S))  // Move light backward (in Z)
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x ,p.y, p.z - 0.01f,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.z -= 0.01f;
     }
-    if (Input::IsKey(DIK_UP))
+    if (Input::IsKey(DIK_UP))  // Move light up (in Y)
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x,p.y + 0.01f, p.z,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.y += 0.01f;
     }
-    if (Input::IsKey(DIK_DOWN))
+    if (Input::IsKey(DIK_DOWN))  // Move light down (in Y)
     {
-        XMFLOAT4 p = Direct3D::GetLightPos();
-        p = { p.x ,p.y - 0.01f, p.z,p.w };
-        Direct3D::SetLightPos(p);
+        lightPos.y -= 0.01f;
     }
+
+    // Update light position
+    Direct3D::SetLightPos(lightPos);
 }
+
 
 
 
@@ -81,29 +77,22 @@ void Stage::Update()
 //描画
 void Stage::Draw()
 {
-    //for (int i = 0; i < 3; i++) {
-    //    Transform tr;
-    //    tr.position_ = { transform_.position_.x + (float)i*2.0f, transform_.position_.y ,transform_.position_.z };
-    //    tr.scale_ = transform_.scale_;
-    //    tr.rotate_ = transform_.rotate_;
-    //    Model::SetTransform(hModel_[i], tr);
-    //    Model::Draw(hModel_[i]);
-    //}
-
+    // Render the light position as a small model
     Transform ltr;
-    ltr.position_ = { Direct3D::GetLightPos().x,Direct3D::GetLightPos().y,Direct3D::GetLightPos().z };
-    ltr.scale_ = { 0.1,0.1,0.1 };
-    Model::SetTransform(hModel_[0], ltr);
-    Model::Draw(hModel_[0]);
+    ltr.position_ = { Direct3D::GetLightPos().x, Direct3D::GetLightPos().y, Direct3D::GetLightPos().z };
+    ltr.scale_ = { 0.1f, 0.1f, 0.1f };  // Small scale to represent the light
+    Model::SetTransform(hModel_[0], ltr);  // Set light transform
+    Model::Draw(hModel_[0]);  // Draw the light representation
 
-
+    // Render the ground (or other models in the scene)
     Transform tr;
-    tr.position_ = { 0, 0, 0 };
-    //tr.scale_ = { 5.0f, 5.0f, 5.0f };
-    tr.rotate_ = { 0,0,0 };
-    Model::SetTransform(hGround, tr);
-    Model::Draw(hGround);
+    tr.position_ = { 0, 0, 0 };  // Position of the ground
+    //tr.scale_ = { 5.0f, 5.0f, 5.0f };  // Uncomment if scaling is needed
+    tr.rotate_ = { 0, 0, 0 };  // No rotation
+    Model::SetTransform(hGround, tr);  // Set ground transform
+    Model::Draw(hGround);  // Draw the ground
 }
+
 
 //開放
 void Stage::Release()

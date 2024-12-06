@@ -33,7 +33,7 @@ int Model::Load(std::string fileName)
 	return(modelList.size() - 1);
 }
 
-void Model::SetTransform(int hModel, Transform& transform)
+void Model::SetTransform(int hModel, Transform transform)
 {
 	modelList[hModel]->transform_ = transform;
 	//モデル番号は、modelListのインデックス
@@ -64,4 +64,3 @@ void Model::Release()
 	}
 	modelList.clear();
 }
-

@@ -45,8 +45,9 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     float4 wpos = mul(pos, matW); //ワールド座標に変換
     float4 wnormal = mul(normal, matNormal);
     
-    outData.pos = spos;
+   
     outData.wpos = wpos;
+    outData.pos = spos;
     outData.uv = uv.xy;
     outData.normal = wnormal;
     //float4 dir = normalize(lightPosition - wpos);
@@ -67,15 +68,16 @@ float4 PS(VS_OUT inData) : SV_Target
     float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル位置のポリゴンの3次元座標＝wpos
     //inData.normal.z = 0;
     float color = saturate(dot(normalize(inData.normal.xyz), dir));
-    float3 k = { 1.0f, 1.0f, 1.0f };
+    float3 k = { 0.2f, 0.2f, 1.0f };
     float len = length(lightPosition.xyz - inData.wpos.xyz);
     float dTerm = 1.0 / (k.x + k.y * len + k.z * len * len);
     
     if (isTextured == false)
     {
         diffuse = diffuseColor * color * dTerm * factor.x;
-        //diffuse = float4(1.0, 1.0, 1.0, 1.0);
-        ambient = diffuseColor * ambentSource * factor.x;
+        ////diffuse = float4(1.0, 1.0, 1.0, 1.0);
+        ambient = diffuseColor * ambentSource;
+
     }
     else
     {
@@ -83,5 +85,5 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 
     }
-    return diffuse;
+    return diffuse + ambient;
 }
