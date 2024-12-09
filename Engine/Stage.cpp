@@ -26,9 +26,9 @@ void Stage::Initialize()
     hModel_[0] = Model::Load("Asset/NUMBALL.fbx");
     hModel_[1] = Model::Load("Asset/tama.fbx");
     hModel_[2] = Model::Load("Asset/tamatamatama.fbx");
-    hGround = Model::Load("Asset/dodai.fbx");
+    hGround = Model::Load("Asset/Plane.fbx");
 
-    Camera::SetPosition(XMFLOAT3{ 0, 0.5, -1 });
+    Camera::SetPosition(XMFLOAT3{ 0, 0.5, -1.5 });
     Camera::SetTarget(XMFLOAT3{ 0,0,0 });
 }
 

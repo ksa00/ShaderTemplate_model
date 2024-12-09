@@ -4,6 +4,8 @@
 #include <cassert>
 #include <vector>
 
+
+
 //変数
 namespace Direct3D
 {
@@ -22,7 +24,7 @@ namespace Direct3D
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
-	XMFLOAT4 lightPos{ 0, 0.5, 0, 1 };
+	XMFLOAT4 lightPos{ 0, 0.5, 0, 0 };
 }
 
 
@@ -317,7 +319,7 @@ HRESULT Direct3D::InitPointLightShader()
 	HRESULT hr;
 	// 頂点シェーダの作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"PointerLight.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+	D3DCompileFromFile(L"PointLightShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
 	assert(pCompileVS != nullptr); //ここはassertionで処理
 
 	hr = pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
@@ -350,7 +352,7 @@ HRESULT Direct3D::InitPointLightShader()
 
 	// ピクセルシェーダの作成（コンパイル）
 	ID3DBlob* pCompilePS = nullptr;
-	D3DCompileFromFile(L"PointerLight.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+	D3DCompileFromFile(L"PointLightShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
 	assert(pCompilePS != nullptr);
 
 	hr = pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &(shaderBundle[SHADER_POINT].pPixelShader_));
@@ -402,6 +404,7 @@ void Direct3D::BeginDraw()
 
 	//深度バッファクリア
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	
 }
 
 
@@ -410,8 +413,13 @@ void Direct3D::BeginDraw()
 
 void Direct3D::EndDraw()
 {
+
+
+
 	//スワップ（バックバッファを表に表示する）
 	pSwapChain_->Present(0, 0);
+
+
 }
 
 
@@ -419,6 +427,7 @@ void Direct3D::EndDraw()
 //解放処理
 void Direct3D::Release()
 {
+
 	//解放処理
 	for (int i = 0; i < SHADER_MAX; i++)
 	{

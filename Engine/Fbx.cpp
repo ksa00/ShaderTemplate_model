@@ -1,4 +1,3 @@
-
 #include <assert.h>
 #include "Fbx.h"
 #include "Direct3D.h"
@@ -263,6 +262,7 @@ void Fbx::Draw(Transform& transform)
 	{
 		//コンスタントバッファに情報を渡す
 		CONSTANT_BUFFER cb;
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
@@ -307,40 +307,7 @@ void Fbx::Draw(Transform& transform)
 		Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
 	}
 }
+
 void Fbx::Release()
 {
-    // Release texture resources
-    for (int i = 0; i < materialCount_; i++)
-    {
-        if (pMaterialList_[i].pTexture)
-        {
-            delete pMaterialList_[i].pTexture;
-            pMaterialList_[i].pTexture = nullptr;
-        }
-    }
-
-    // Release buffers
-    if (pVertexBuffer_)
-    {
-        pVertexBuffer_->Release();
-        pVertexBuffer_ = nullptr;
-    }
-
-    if (pIndexBuffer_)
-    {
-        for (int i = 0; i < materialCount_; i++)
-        {
-            if (pIndexBuffer_[i])
-            {
-                pIndexBuffer_[i]->Release();
-                pIndexBuffer_[i] = nullptr;
-            }
-        }
-    }
-
-    if (pConstantBuffer_)
-    {
-        pConstantBuffer_->Release();
-        pConstantBuffer_ = nullptr;
-    }
 }
