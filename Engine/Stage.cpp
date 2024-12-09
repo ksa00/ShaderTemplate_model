@@ -3,14 +3,34 @@
 #include "Input.h"
 #include "Camera.h"
 
+void Stage::InitConstantBuffer()
+{
+    D3D11_BUFFER_DESC cb;
+    cb.ByteWidth = sizeof(CONSTBUFFER_STAGE);
+    cb.Usage = D3D11_USAGE_DYNAMIC;
+    cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    cb.MiscFlags = 0;
+    cb.StructureByteStride = 0;
+
+    // コンスタントバッファの作成
+    HRESULT hr;
+    hr = Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, "ステージーコンスタントバッファの作成に失敗しました", "エラー", MB_OK);
+    }
+}
+
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage")
+    :GameObject(parent, "Stage"),pConstantBuffer_(nullptr)
 {
     hModel_[0] = -1;
     hModel_[1] = -1;
     hGround = -1;
     hModel_[2] = -1;
+    hDonut = -1;
 }
 
 //デストラクタ
@@ -27,9 +47,14 @@ void Stage::Initialize()
     hModel_[1] = Model::Load("Asset/tama.fbx");
     hModel_[2] = Model::Load("Asset/tamatamatama.fbx");
     hGround = Model::Load("Asset/Plane.fbx");
-
+    hDonut = Model::Load("Asset/DonutT_Ph.fbx");
+    
+    transform_.position_.y = -0.25f;
+    transform_.scale_ = { 0.25f, 0.25f, 0.25f };
+    
     Camera::SetPosition(XMFLOAT3{ 0, 0.5, -1.5 });
     Camera::SetTarget(XMFLOAT3{ 0,0,0 });
+    InitConstantBuffer();
 }
 
 //更新
@@ -67,6 +92,8 @@ void Stage::Update()
 
     // Update light position
     Direct3D::SetLightPos(lightPos);
+    //constant buffer setting
+
 }
 
 
@@ -86,11 +113,14 @@ void Stage::Draw()
 
     // Render the ground (or other models in the scene)
     Transform tr;
-    tr.position_ = { 0, 0, 0 };  // Position of the ground
+    tr.position_ = { 0,- 0.5, 0 };  // Position of the ground
     //tr.scale_ = { 5.0f, 5.0f, 5.0f };  // Uncomment if scaling is needed
     tr.rotate_ = { 0, 0, 0 };  // No rotation
     Model::SetTransform(hGround, tr);  // Set ground transform
     Model::Draw(hGround);  // Draw the ground
+
+    Model::SetTransform(hDonut, transform_);
+    Model::Draw(hDonut);
 }
 
 
