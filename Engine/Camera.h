@@ -30,4 +30,6 @@ namespace Camera
 
 	//プロジェクション行列を取得
 	XMMATRIX GetProjectionMatrix();
+	//視点のげった
+	XMVECTOR GetPosition();
 };

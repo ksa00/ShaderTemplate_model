@@ -229,11 +229,19 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 				HRESULT hr = pMaterialList_[i].pTexture->Load(texFile.string());
 				assert(hr == S_OK);
 			}
-			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+			FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 			FbxDouble  diffuse = pMaterial->DiffuseFactor;
+			FbxDouble3 ambient = pMaterial->Ambient;
 			//diffuse = 1.0;
 			pMaterialList_[i].factor = XMFLOAT4((float)diffuse, (float)diffuse, (float)diffuse, (float)diffuse);
+			pMaterialList_[i].ambient = XMFLOAT4(ambient[0], ambient[1], ambient[2], 1.0f);
+			if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
+			{
+				FbxDouble3 specular = pMaterial->Specular;
+				FbxDouble shininess = pMaterial->Shininess;
 
+
+			}
 		}
 
 		//テクスチャ無し
@@ -246,7 +254,10 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 			//FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
 			FbxDouble  factor = pMaterial->DiffuseFactor;
+			FbxDouble3 ambient = pMaterial->Ambient;
 			pMaterialList_[i].factor = XMFLOAT4((float)factor, (float)factor, (float)factor, (float)factor);
+			pMaterialList_[i].ambient = XMFLOAT4(ambient[0], ambient[1], ambient[2], 1.0f);
+
 		}
 	}
 }

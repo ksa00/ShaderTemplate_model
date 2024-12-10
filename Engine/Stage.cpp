@@ -93,6 +93,15 @@ void Stage::Update()
     // Update light position
     Direct3D::SetLightPos(lightPos);
     //constant buffer setting
+    CONSTBUFFER_STAGE cb;
+    cb.lightPosition = Direct3D::GetLightPos();
+    XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
+    D3D11_MAPPED_SUBRESOURCE pdata;
+    Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+    memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+    Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
+    Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//頂点シェーダー用	
+    Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 
 }
 

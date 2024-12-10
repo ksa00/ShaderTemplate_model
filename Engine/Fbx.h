@@ -22,7 +22,11 @@ class Fbx
 	{
 		Texture* pTexture;
 		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;
+		XMFLOAT4 shininess;
+		XMFLOAT4 ambient;
 		XMFLOAT4 factor;
+
 	};
 
 	struct CONSTBUFFER_MODEL
