@@ -1,21 +1,4 @@
-﻿//
-////初期化
-//void Stage::Initialize()
-//{
-//    hModel_[0] = Model::Load("Asset/NUMBALL.fbx");
-//    hModel_[1] = Model::Load("Asset/tama.fbx");
-//    hModel_[2] = Model::Load("Asset/tamatamatama.fbx");
-//    hGround = Model::Load("Asset/Plane.fbx");
-//    hDonut = Model::Load("Asset/DonutT_Ph.fbx");
-//    
-//    transform_.position_.y = -0.25f;
-//    transform_.scale_ = { 0.25f, 0.25f, 0.25f };
-//    
-//    Camera::SetPosition(XMFLOAT3{ 0, 0.5, -1.5 });
-//    Camera::SetTarget(XMFLOAT3{ 0,0,0 });
-//    InitConstantBuffer();
-//}
-#include "Stage.h"
+﻿#include "Stage.h"
 #include "Model.h"
 #include "Input.h"
 #include "Camera.h"
