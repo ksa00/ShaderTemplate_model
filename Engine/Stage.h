@@ -1,21 +1,21 @@
 #pragma once
 #include "GameObject.h"
 
-struct CONSTBUFFER_STAGE {
-    XMFLOAT4 lightPosition;//光源位置
-    XMFLOAT4 eyePosition;//視点位置
-
+struct CONSTBUFFER_STAGE
+{
+    XMFLOAT4 lightPosition; //光源位置
+    XMFLOAT4 eyePosition;//視点の位置
 };
 
 //◆◆◆を管理するクラス
 class Stage : public GameObject
 {
-    int hModel_[3];    //モデル番号
+    int hModel_;    //モデル番号
+    int hRoom_;
     int hGround;
-    int hDonut;
+    int hBunny_;
     ID3D11Buffer* pConstantBuffer_;
     void InitConstantBuffer();
-
 public:
     //コンストラクタ
     Stage(GameObject* parent);

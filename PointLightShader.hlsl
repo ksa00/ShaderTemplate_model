@@ -17,11 +17,13 @@ cbuffer gModel : register(b0)
     float4 factor;
     bool isTextured; //テクスチャーが貼られているかどうか
 };
-cbuffer gStage:register(b1)
+
+cbuffer gStage : register(b1)
 {
     float4 lightPosition;
     float4 eyePosition;
 };
+
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
 //───────────────────────────────────────
@@ -48,7 +50,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     float4 wpos = mul(pos, matW); //ワールド座標に変換
     float4 wnormal = mul(normal, matNormal);
     
-     outData.pos = spos;
+    outData.pos = spos;
     outData.wpos = wpos;
     outData.uv = uv.xy;
     outData.normal = wnormal;

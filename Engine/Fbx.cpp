@@ -231,17 +231,18 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			}
 			FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 			FbxDouble  diffuse = pMaterial->DiffuseFactor;
-			FbxDouble3 ambient = pMaterial->Ambient;
-			//diffuse = 1.0;
+			FbxDouble3  ambient = pMaterial->Ambient;
 			pMaterialList_[i].factor = XMFLOAT4((float)diffuse, (float)diffuse, (float)diffuse, (float)diffuse);
-			pMaterialList_[i].ambient = XMFLOAT4(ambient[0], ambient[1], ambient[2], 1.0f);
+			pMaterialList_[i].ambient = { (float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f };
+			//あなたはフォンのパラメータを持ってますか？
 			if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
 			{
 				FbxDouble3 specular = pMaterial->Specular;
-				FbxDouble shininess = pMaterial->Shininess;
-
-
+				FbxDouble shininess = pMaterial->Shininess; //4つとも同じ値でセット
 			}
+			//ここで、自分のpMaterialList_[i]に値を設定
+
+
 		}
 
 		//テクスチャ無し
@@ -254,10 +255,9 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 			//FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
 			FbxDouble  factor = pMaterial->DiffuseFactor;
-			FbxDouble3 ambient = pMaterial->Ambient;
 			pMaterialList_[i].factor = XMFLOAT4((float)factor, (float)factor, (float)factor, (float)factor);
-			pMaterialList_[i].ambient = XMFLOAT4(ambient[0], ambient[1], ambient[2], 1.0f);
-
+			FbxDouble3  ambient = pMaterial->Ambient;
+			pMaterialList_[i].ambient = { (float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f };
 		}
 	}
 }
@@ -278,7 +278,7 @@ void Fbx::Draw(Transform& transform)
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
-	//	cb.lightPosition = Direct3D::GetLightPos();
+		//cb.lightPosition = Direct3D::GetLightPos();
 		cb.diffuseFactor = pMaterialList_[i].factor;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 

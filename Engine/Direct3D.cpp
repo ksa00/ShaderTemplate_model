@@ -4,7 +4,9 @@
 #include <cassert>
 #include <vector>
 
-
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_dx11.h"
+#include "../imgui/imgui_impl_win32.h"
 
 //変数
 namespace Direct3D
@@ -24,7 +26,7 @@ namespace Direct3D
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
-	XMFLOAT4 lightPos{ 0, 0.5, 0, 1 };
+	XMFLOAT4 lightPos{ 0, 0.5, 0, 0 };
 }
 
 
@@ -404,7 +406,9 @@ void Direct3D::BeginDraw()
 
 	//深度バッファクリア
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 }
 
 
@@ -415,6 +419,13 @@ void Direct3D::EndDraw()
 {
 
 
+	//ImGui::Begin("TestWin");
+
+	ImGui::Button("Button");
+	//ImGui::End();
+	//ImGui::EndFrame();
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	//スワップ（バックバッファを表に表示する）
 	pSwapChain_->Present(0, 0);
@@ -428,6 +439,9 @@ void Direct3D::EndDraw()
 void Direct3D::Release()
 {
 
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 	//解放処理
 	for (int i = 0; i < SHADER_MAX; i++)
 	{
