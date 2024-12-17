@@ -113,6 +113,7 @@
     <FxCompile Include="Simple2D.hlsl" />
     <FxCompile Include="crtRender.hlsl" />
     <FxCompile Include="PointLightShader.hlsl" />
+    <FxCompile Include="ToonShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
