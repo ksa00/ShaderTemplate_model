@@ -3,12 +3,13 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Texture.h"
+#include"Input.h"
 #include <vector>
 #include <filesystem>
 
 Fbx::Fbx()
 	:vertexCount_(0), polygonCount_(0), materialCount_(0),
-	pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr)
+	pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr),currentShader(SHADER_POINTLIGHT)
 {
 }
 
@@ -282,7 +283,21 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 void Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_POINT);
+	if (Input::IsKeyDown(DIK_P))
+	{
+		if (currentShader == SHADER_POINTLIGHT)
+		{
+		
+			Direct3D::SetShader(SHADER_POINT);
+			currentShader = SHADER_SIMPLE3D;
+		}
+		else
+		{
+			Direct3D::SetShader(SHADER_3D);
+			currentShader = SHADER_POINTLIGHT;
+		}
+	}
+	
 	transform.Calculation();//トランスフォームを計算
 
 
@@ -290,16 +305,16 @@ void Fbx::Draw(Transform& transform)
 	{
 		//コンスタントバッファに情報を渡す
 		CONSTBUFFER_MODEL cb;
-		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
+		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.diffuseFactor = pMaterialList_[i].factor;
 		cb.ambientColor = pMaterialList_[i].ambient;
 		cb.specularColor = pMaterialList_[i].specular;
 		cb.shininess = pMaterialList_[i].shininess;
-		cb.diffuseColor = pMaterialList_[i].diffuse;
-		cb.diffuseFactor = pMaterialList_[i].factor;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+		cb.lightPosition = Direct3D::GetLightPos();
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

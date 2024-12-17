@@ -32,7 +32,8 @@ Stage::Stage(GameObject* parent)
     hModel_ = -1;
     hGround = -1;
     hRoom_ = -1;
-    hBunny_ = -1;
+    for (int i = 0; i < 4; i++) { hDonut[i] = -1; }
+
 }
 
 //デストラクタ
@@ -46,7 +47,19 @@ void Stage::Initialize()
     hModel_ = Model::Load("Asset\\NUMBALL.fbx");
     hRoom_ = Model::Load("Asset\\room.fbx");
     hGround = Model::Load("Asset\\plane3.fbx");
-    hBunny_ = Model::Load("Asset\\DonutT_Ph.fbx");
+    const char* modelFiles[4] = {
+        "Asset\\DonutT_Ph.fbx",
+        "Asset\\DonutT_L.fbx",
+        "Asset\\DonutC_Ph.fbx",
+        "Asset\\DonutC_L.fbx"
+    };
+
+    for (int i = 0; i < 4; ++i)
+    {
+        hDonut[i] = Model::Load(modelFiles[i]);
+    }
+
+
     Camera::SetPosition(XMFLOAT3{ 0, 0.8, -2.8 });
     Camera::SetTarget(XMFLOAT3{ 0,0.8,0 });
 
@@ -132,14 +145,16 @@ void Stage::Draw()
     Model::SetTransform(hRoom_, tr);
     Model::Draw(hRoom_);
 
-    static Transform tbunny;
-    tbunny.scale_ = { 0.25,0.25,0.25 };
-    tbunny.position_ = { 0, 0.5, 0 };
-    tbunny.rotate_.y += 0.1;
-    Model::SetTransform(hBunny_, tbunny);
-    Model::Draw(hBunny_);
+    static Transform Donut;
+    Donut.scale_ = { 0.25,0.25,0.25 };
+    Donut.rotate_.y += 0.1;
+    for (int i = 0; i < 4; ++i) {
+        Donut.position_ = {-0.75f+ i * 0.5f, 0.5f, 0.0f }; // Position each model with some distance between them 
+       Model::SetTransform(hDonut[i],Donut);
+       Model::Draw(hDonut[i]);
+    }
 
-    ImGui::Text("Rotate:%.3f", tbunny.rotate_.y);
+    ImGui::Text("Rotate:%.3f", Donut.rotate_.y);
 
 }
 

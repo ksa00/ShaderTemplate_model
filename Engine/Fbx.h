@@ -22,10 +22,11 @@ class Fbx
 	{
 		Texture* pTexture;
 		XMFLOAT4 diffuse;//鏡面反射係数　ベクトル
+		XMFLOAT4 factor; //スカラ
 		XMFLOAT4 specular;//鏡面反射係数　ベクトル
 		XMFLOAT4 shininess; //鏡面反射のパラメータ スカラ
 		XMFLOAT4 ambient; //環境光の反射係数（環境光の色？）ベクトル
-		XMFLOAT4 factor; //スカラ
+	
 	};
 
 	struct CONSTBUFFER_MODEL
@@ -39,6 +40,7 @@ class Fbx
 		XMFLOAT4    specularColor;
 		XMFLOAT4    shininess;
 		int			isTextured;
+		XMFLOAT4    lightPosition;
 	};
 
 	struct VERTEX
@@ -62,8 +64,9 @@ class Fbx
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
+	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D }; 
+	ShaderType currentShader;
 public:
-
 	Fbx();
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);

@@ -13,7 +13,9 @@ class Stage : public GameObject
     int hModel_;    //ƒ‚ƒfƒ‹”Ô†
     int hRoom_;
     int hGround;
-    int hBunny_;
+    int hDonut[4];
+ 
+ 
     ID3D11Buffer* pConstantBuffer_;
     void InitConstantBuffer();
 public:
