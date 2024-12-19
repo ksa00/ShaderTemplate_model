@@ -66,6 +66,7 @@ class Fbx
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D,SHADER_TOON_ }; 
 	ShaderType currentShader;
+	Texture* pToonTex_;
 public:
 	Fbx();
 	HRESULT Load(std::string fileName);

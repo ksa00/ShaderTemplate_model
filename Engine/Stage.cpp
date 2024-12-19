@@ -154,7 +154,11 @@ void Stage::Draw()
        Model::Draw(hDonut[i]);
     }
 
-    ImGui::Text("Rotate:%.3f", Donut.rotate_.y);
+    ImGui::Text("RotateY:%.3f", Donut.rotate_.y);
+    ImGui::Text("SpherePosX:%.3f", ltr.position_.x);
+    ImGui::Text("SpherePosY:%.3f", ltr.position_.y);
+    ImGui::Text("SpherePosZ:%.3f", ltr.position_.z);
+
 
 }
 

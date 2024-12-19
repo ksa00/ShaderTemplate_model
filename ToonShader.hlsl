@@ -4,6 +4,9 @@
 Texture2D g_texture : register(t0); // テクスチャー
 SamplerState g_sampler : register(s0); // サンプラー
 
+Texture2D g_toon_texture : register(t1); // toon テクスチャー
+SamplerState g_toon_sampler : register(s1); // toonサンプラー
+
 //───────────────────────────────────────
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -54,14 +57,80 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
     return outData;
 }
-//───────────────────────────────────────
-// ピクセルシェーダ
+
+////───────────────────────────────────────
+//// ピクセルシェーダ
+//float4 PS(VS_OUT inData) : SV_Target
+//{
+//    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
+//    float4 diffuse;
+//    float4 ambient;
+
+//    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
+//    float NdotL = saturate(dot(normalize(inData.normal.xyz), dir));
+    
+//    // Quantize the lighting to create distinct bands (toon shading)
+//    float toonLevels = 3.0; // Number of distinct shades
+//    float quantizedNdotL = floor(NdotL * toonLevels) / toonLevels;
+
+//    if (!isTextured)
+//    {
+//        diffuse = diffuseColor * quantizedNdotL * factor.x;
+//        ambient = diffuseColor * ambientSource * factor.x;
+//    }
+//    else
+//    {
+//        diffuse = g_texture.Sample(g_sampler, inData.uv) * quantizedNdotL * factor.x;
+//        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+//    }
+
+  
+//    float2 uv = float2(quantizedNdotL, 0.0);
+//    return g_toon_texture.Sample(g_toon_sampler,uv);
+//}
+
+//ネットにあったやつ
+//float4 PS(VS_OUT inData) : SV_Target
+//{
+//    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
+//    float4 diffuse;
+//    float4 ambient;
+
+//    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz);
+//    float NdotL = saturate(dot(normalize(inData.normal.xyz), dir));
+
+//    // Define thresholds for toon levels using step function
+//    float toonLevel1 = 0.2;
+//    float toonLevel2 = 0.4;
+//    float toonLevel3 = 0.6;
+//    float toonLevel4 = 0.8;
+
+//    // Create quantized levels
+//    float toonShading = step(toonLevel1, NdotL) * 0.25 +
+//                        step(toonLevel2, NdotL) * 0.25 +
+//                        step(toonLevel3, NdotL) * 0.25 +
+//                        step(toonLevel4, NdotL) * 0.25;
+
+//    if (!isTextured)
+//    {
+//        diffuse = diffuseColor * toonShading * factor.x;
+//        ambient = diffuseColor * ambientSource * factor.x;
+//    }
+//    else
+//    {
+//        diffuse = g_texture.Sample(g_sampler, inData.uv) * toonShading * factor.x;
+//        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+//    }
+//    return ambient+diffuse;
+//}
+
+
+//先生、 のやつ
 float4 PS(VS_OUT inData) : SV_Target
 {
     float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
     float4 diffuse;
     float4 ambient;
-
     float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
     float color = saturate(dot(normalize(inData.normal.xyz), dir));
     float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
@@ -69,19 +138,18 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 n2 = float4(2 / 4.0, 2 / 4.0, 2 / 4.0, 1);
     float4 n3 = float4(3 / 4.0, 3 / 4.0, 3 / 4.0, 1);
     float4 n4 = float4(4 / 4.0, 4 / 4.0, 4 / 4.0, 1);
-    float tI = 0.1 * step(n1, NL) + 0.2 * step(n2, NL) + 0.3 * step(n3, NL) + 0.4 * step(n4, NL);
-        if (!isTextured)
-        {
-            diffuse = diffuseColor * color * factor.x;
-            ambient = diffuseColor * ambientSource * factor.x;
-        }
-        else
-        {
-            diffuse = g_texture.Sample(g_sampler, inData.uv) * color * factor.x;
-            ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
-        }
-
+    float4 tI = 0.1 * step(n1, NL) + 0.2 * step(n2, NL) + 0.3 * step(n3, NL) + 0.4 * step(n4, NL);
+    if (!isTextured)
+    {
+        diffuse = diffuseColor * tI * factor.x;
+        ambient = diffuseColor * ambientSource;
+    }
+    else
+    {
+        diffuse = g_texture.Sample(g_sampler, inData.uv) * tI * factor.x;
+        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource ;
+    }
   //  return diffuse + ambient;
-    return tI;
+    float2 uv = float2(tI.x, 0.0);
+    return g_toon_texture.Sample(g_toon_sampler, uv);
 }
-
