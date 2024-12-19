@@ -64,19 +64,24 @@ float4 PS(VS_OUT inData) : SV_Target
 
     float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
     float color = saturate(dot(normalize(inData.normal.xyz), dir));
-    float3 k = { 0.2f, 0.2f, 1.0f };
+    float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
+    float4 n1 = float4(1 / 4.0, 1 / 4.0, 1 / 4.0, 1);
+    float4 n2 = float4(2 / 4.0, 2 / 4.0, 2 / 4.0, 1);
+    float4 n3 = float4(3 / 4.0, 3 / 4.0, 3 / 4.0, 1);
+    float4 n4 = float4(4 / 4.0, 4 / 4.0, 4 / 4.0, 1);
+    float tI = 0.1 * step(n1, NL) + 0.2 * step(n2, NL) + 0.3 * step(n3, NL) + 0.4 * step(n4, NL);
+        if (!isTextured)
+        {
+            diffuse = diffuseColor * color * factor.x;
+            ambient = diffuseColor * ambientSource * factor.x;
+        }
+        else
+        {
+            diffuse = g_texture.Sample(g_sampler, inData.uv) * color * factor.x;
+            ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+        }
 
-    if (!isTextured)
-    {
-        diffuse = diffuseColor * color * factor.x;
-        ambient = diffuseColor * ambientSource * factor.x;
-    }
-    else
-    {
-        diffuse = g_texture.Sample(g_sampler, inData.uv) * color * factor.x;
-        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
-    }
-
-    return diffuse + ambient;
+  //  return diffuse + ambient;
+    return tI;
 }
 

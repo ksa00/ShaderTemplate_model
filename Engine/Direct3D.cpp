@@ -170,10 +170,7 @@ HRESULT Direct3D::InitShader()
 	{
 		return E_FAIL;
 	}
-	if (FAILED(InitPointLightShader()))
-	{
-		return E_FAIL;
-	}if (FAILED(InitToonShader()))
+    if (FAILED(InitToonShader()))
 	{
 		return E_FAIL;
 	}
@@ -434,7 +431,7 @@ HRESULT Direct3D::InitToonShader()
 	D3DCompileFromFile(L"ToonShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
 	assert(pCompilePS != nullptr);
 
-	hr = pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &(shaderBundle[SHADER_3D].pPixelShader_));
+	hr = pDevice_->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &(shaderBundle[SHADER_TOON].pPixelShader_));
 	if (FAILED(hr))
 	{
 		//ƒGƒ‰[ˆ—

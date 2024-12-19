@@ -64,7 +64,7 @@ class Fbx
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
-	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D }; 
+	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D,SHADER_TOON_ }; 
 	ShaderType currentShader;
 public:
 	Fbx();
