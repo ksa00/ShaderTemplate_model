@@ -40,7 +40,6 @@ class Fbx
 		XMFLOAT4    specularColor;
 		XMFLOAT4    shininess;
 		int			isTextured;
-		XMFLOAT4    lightPosition;
 	};
 
 	struct VERTEX
