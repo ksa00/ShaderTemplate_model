@@ -142,7 +142,10 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 n2 = float4(2 / 4.0, 2 / 4.0, 2 / 4.0, 1);
     float4 n3 = float4(3 / 4.0, 3 / 4.0, 3 / 4.0, 1);
     float4 n4 = float4(4 / 4.0, 4 / 4.0, 4 / 4.0, 1);
-    float4 tI = 0.1 * step(n1, NL) + 0.2 * step(n2, NL) + 0.3 * step(n3, NL) + 0.4 * step(n4, NL);
+    float4 tI = 0.1 * step(n1, inData.color)
+               + 0.2 * step(n2, inData.color) 
+               + 0.3 * step(n3, inData.color) 
+               + 0.4 * step(n4, inData.color);
     if (!isTextured)
     {
         diffuse = diffuseColor * tI * factor.x;
@@ -155,5 +158,5 @@ float4 PS(VS_OUT inData) : SV_Target
     }
   //  return diffuse + ambient;
     float2 uv = float2(tI.x, 0);
-    return g_toon_texture.Sample(g_toon_sampler, uv)+ambient;
+    return g_toon_texture.Sample(g_toon_sampler, uv);
 }
