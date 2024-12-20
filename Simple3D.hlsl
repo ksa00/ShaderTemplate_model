@@ -63,8 +63,8 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 ambient;
 
  //   float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
-    float3 dir = normalize(lightPosition.xyz);
-    float color = saturate(dot(normalize(inData.normal.xyz), dir));
+  //  float4 dir = normalize(lightPosition);
+    float color = saturate(dot(normalize(inData.normal), normalize(lightPosition)));
 
     if (!isTextured)
     {
