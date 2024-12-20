@@ -37,6 +37,7 @@ struct VS_OUT
     float4 pos : SV_POSITION; // 位置
     float4 wpos : POSITION1; // ワールド座標
     float2 uv : TEXCOORD; // UV座標
+    float4 color : COLOR;//色明るさ
     float4 normal : NORMAL; // 法線
 };
 
@@ -49,10 +50,13 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
     // スクリーン座標に変換し、ピクセルシェーダーへ
     outData.pos = mul(pos, matWVP);
-    outData.uv = uv.xy;
+    outData.uv = uv;
 
     // 法線をワールド座標系に変換
     outData.normal = mul(normal, matNormal);
+    float4 light = lightPosition;
+    light = normalize(light);
+    outData.color = clamp(dot(normal, light), 0, 1);
     outData.wpos = mul(pos, matW);
 
     return outData;
@@ -131,8 +135,8 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
     float4 diffuse;
     float4 ambient;
-    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
-    float color = saturate(dot(normalize(inData.normal.xyz), dir));
+  //  float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); // 光源からピクセル位置へのベクトルを計算
+    //float color = saturate(dot(normalize(inData.normal.xyz), dir));
     float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
     float4 n1 = float4(1 / 4.0, 1 / 4.0, 1 / 4.0, 1);
     float4 n2 = float4(2 / 4.0, 2 / 4.0, 2 / 4.0, 1);
@@ -150,6 +154,6 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource ;
     }
   //  return diffuse + ambient;
-    float2 uv = float2(tI.x, 0.0);
-    return g_toon_texture.Sample(g_toon_sampler, uv);
+    float2 uv = float2(tI.x, 0);
+    return g_toon_texture.Sample(g_toon_sampler, uv)+ambient;
 }

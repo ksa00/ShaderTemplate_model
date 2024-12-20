@@ -350,8 +350,8 @@ void Fbx::Draw(Transform& transform)
 		}
 		ID3D11SamplerState* pSampler = pToonTex_->GetSampler();
 		ID3D11ShaderResourceView* pSRV = pToonTex_->GetSRV();
-		Direct3D::pContext_->PSSetSamplers(0, 1,&pSampler);
-		Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
+		Direct3D::pContext_->PSSetSamplers(1, 1,&pSampler);
+		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRV);
 
 
 		//•`‰æ
