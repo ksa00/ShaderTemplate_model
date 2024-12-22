@@ -1,4 +1,5 @@
 ﻿#include "Stage.h"
+#include"Fbx.h"
 #include "Model.h"
 #include "Input.h"
 #include "Camera.h"
@@ -105,7 +106,7 @@ void Stage::Update()
         XMFLOAT4 p = Direct3D::GetLightPos();
         p = { p.x ,p.y - 0.01f, p.z,p.w };
         Direct3D::SetLightPos(p);
-    }
+    } 
 
     //コンスタントバッファの設定と、シェーダーへのコンスタントバッファのセットを書くよ
     CONSTBUFFER_STAGE cb;

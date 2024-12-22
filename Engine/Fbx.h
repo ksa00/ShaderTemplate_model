@@ -63,9 +63,11 @@ class Fbx
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
+	
+public:
 	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D }; 
 	ShaderType currentShader;
-public:
+	void SetShader(ShaderType shader_) { currentShader = shader_; }
 	Fbx();
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);

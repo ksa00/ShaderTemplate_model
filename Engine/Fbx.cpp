@@ -285,19 +285,20 @@ void Fbx::Draw(Transform& transform)
 {
 	if (Input::IsKeyDown(DIK_P))
 	{
-		if (currentShader == SHADER_POINTLIGHT)
-		{
-		
-			Direct3D::SetShader(SHADER_POINT);
-			currentShader = SHADER_SIMPLE3D;
-		}
-		else
-		{
-			Direct3D::SetShader(SHADER_3D);
-			currentShader = SHADER_POINTLIGHT;
-		}
+		if(currentShader==SHADER_POINTLIGHT)SetShader(SHADER_SIMPLE3D);
+		else SetShader(SHADER_POINTLIGHT);
 	}
 	
+	switch (currentShader)
+	{
+	case 0:
+		Direct3D::SetShader(SHADER_POINT);
+		break;
+	case 1:
+			Direct3D::SetShader(SHADER_3D);
+			break;
+
+	}
 	transform.Calculation();//トランスフォームを計算
 
 
