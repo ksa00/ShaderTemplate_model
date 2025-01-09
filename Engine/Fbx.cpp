@@ -287,18 +287,21 @@ void Fbx::Draw(Transform& transform)
 {
 	if (Input::IsKeyDown(DIK_P))
 	{
-		if (currentShader == SHADER_POINTLIGHT)
-		{
-
-			Direct3D::SetShader(SHADER_POINT);
-			currentShader = SHADER_TOON_;
-		}
-		else
-		{
-			Direct3D::SetShader(SHADER_TOON);
-			currentShader = SHADER_POINTLIGHT;
-		}
+		if (currentShader == SHADER_POINTLIGHT)SetShader(SHADER_TOON_);
+		else SetShader(SHADER_POINTLIGHT);
 	}
+
+	switch (currentShader)
+	{
+	case 0:
+		Direct3D::SetShader(SHADER_POINT);
+		break;
+	case 1:
+		Direct3D::SetShader(SHADER_TOON);
+		break;
+
+	}
+
 	transform.Calculation();//トランスフォームを計算
 
 
@@ -315,7 +318,6 @@ void Fbx::Draw(Transform& transform)
 		cb.specularColor = pMaterialList_[i].specular;
 		cb.shininess = pMaterialList_[i].shininess;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-		cb.lightPosition = Direct3D::GetLightPos();
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

@@ -40,7 +40,7 @@ class Fbx
 		XMFLOAT4    specularColor;
 		XMFLOAT4    shininess;
 		int			isTextured;
-		XMFLOAT4    lightPosition;
+	
 	};
 
 	struct VERTEX
@@ -64,10 +64,11 @@ class Fbx
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
-	enum ShaderType { SHADER_POINTLIGHT, SHADER_SIMPLE3D,SHADER_TOON_ }; 
-	ShaderType currentShader;
 	Texture* pToonTex_;
 public:
+	enum ShaderType { SHADER_POINTLIGHT, SHADER_TOON_ };
+	ShaderType currentShader;
+	void SetShader(ShaderType shader_) { currentShader = shader_; }
 	Fbx();
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
